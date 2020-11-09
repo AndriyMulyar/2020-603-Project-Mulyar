@@ -1,0 +1,3 @@
+[submodule "fast-transformers"]
+	path = fast-transformers
+	url = git@github.com:AndriyMulyar/fast-transformers.git
