@@ -17,4 +17,4 @@ the computational requirements for achieving the performance gains of transforme
 customized self-attention operations that have sub-quadratic time and memory complexity with respect to the input
  representation set cardinality.
  
-This project analyzes the theory and GPU implementation behind two such techniques: cluster attention and 
+This project analyzes the theory and GPU implementation behind two such techniques: cluster attention and linear auto-regressive decoding attention.
