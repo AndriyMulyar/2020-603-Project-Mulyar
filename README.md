@@ -18,3 +18,8 @@ customized self-attention operations that have sub-quadratic time and memory com
  representation set cardinality.
  
 This project analyzes the theory and GPU implementation behind two such techniques: cluster attention and sliding window attention.
+
+
+### Implementation Reference Resources
+
+- [Pytorch's C++/CUDA extension documentation](https://pytorch.org/tutorials/advanced/cpp_extension.html?highlight=backward)
