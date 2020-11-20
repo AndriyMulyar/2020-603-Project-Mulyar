@@ -10,7 +10,8 @@ setup(
     install_requires=[
         'tokenizers',
         'datasets',
-        'torch'
+        'torch',
+        'ninja' #allows for just in time c++/cuda extension compilation.
     ],
     include_package_data=True,
 )

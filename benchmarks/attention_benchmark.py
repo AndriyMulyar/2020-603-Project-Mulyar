@@ -31,7 +31,7 @@ def run_seq_len_benchmark(model: torch.nn.Module, builder=None, start_n=128, geo
 builder = TransformerEncoderBuilder.from_kwargs(
     n_layers=12,
     n_heads=8,
-    attention_type = "reformer",
+    attention_type = "improved-cluster",
     # clusters = 128,
     local_context=3,
     query_dimensions=64,
@@ -39,9 +39,6 @@ builder = TransformerEncoderBuilder.from_kwargs(
     feed_forward_dimensions=1024
 )
 
-# Build a transformer with softmax attention
-# builder.attention_type = "local"
-# builder.local_context = 3
 model = builder.get()
 
 run_seq_len_benchmark(model, builder=builder)
