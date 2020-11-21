@@ -176,6 +176,7 @@ void sliding_dot(
     int L = A.size(1);
 
     // Save the intermediate results in here
+    //
     auto buffer = torch::zeros(
         {N, a_blocks, a_blocks+local_context},
         A.options()
@@ -184,10 +185,10 @@ void sliding_dot(
     for (int l=0; l<L; l+=a_blocks) {
         // Compute the sizes of the sub problems to be computed in this
         // block iteration
-        int s_start = std::max(0, l-local_context/2);
-        int s_end = std::min(L, l-local_context/2+local_context+a_blocks);
-        int n_b = s_end-s_start;
-        int n_a = std::min(L-l, a_blocks);
+        int s_start = std::max(0, l-local_context/2); // beginning of key context window
+        int s_end = std::min(L, l-local_context/2+local_context+a_blocks); // end of blocked key context window
+        int n_b = s_end-s_start; //length of blocked key context window
+        int n_a = std::min(L-l, a_blocks); //number of queries in this block
 
         // Compute the dot products
         auto buff = buffer.narrow(1, 0, n_a).narrow(2, 0, n_b);
