@@ -8,7 +8,7 @@ def run_seq_len_benchmark(model: torch.nn.Module, builder=None, start_n=128, geo
     torch.cuda.synchronize()
     # Warmup GPU
     with torch.no_grad():
-        model(torch.rand(1, 128, 8 * 64).cuda())
+        model(torch.rand(1, 512, 8 * 64).cuda())
     torch.cuda.synchronize()
 
     N = start_n
@@ -27,12 +27,16 @@ def run_seq_len_benchmark(model: torch.nn.Module, builder=None, start_n=128, geo
             file.write(f"{N}, {start.elapsed_time(end)}\n")
             N *= geometric_step
 
+
+
+
+for attention_type in ('linear', 'sliding')
 # Create the builder for our transformers
 builder = TransformerEncoderBuilder.from_kwargs(
     n_layers=12,
     n_heads=8,
-    attention_type = "improved-cluster",
-    # clusters = 128,
+    attention_type = "cluster",
+    clusters = 128,
     local_context=3,
     query_dimensions=64,
     value_dimensions=64,
