@@ -156,10 +156,31 @@ __global__ void sliding_dot_copy_kernel(
 /**
 * A kernel that dots the queries with a local context window keys. Each thread performs a dot product.
 * Computes a single element of out (N, L, local_context)
+*
+* Assumes N*H*L number of thread blocks each containing context_window threads.
+* Arguments
+* ---------
+*     copy_implementation: The kernel implementation that selects the results.
+*     XQ: Tensor of shape (N*H, L, E)
+*     XV: Tensor of shape (N*H, L, E)
+*     out: Tensor of shape (N*H, L, local_context)
 */
-__global__ void local_dot_product_kernel(float3_accessor XQ, float3_accessor XK, float3_accessor out, int local_context){
-    int batch_index = blockIdx.
+__global__ void local_dot_product_kernel(float3_accessor XQ, float3_accessor XK,
+                                         float3_accessor out, int local_context, int L, int E){
+    int batch_index = blockIdx.x; //the key,context_window pair we are computing the dot products for
+    int query = blockIdx.x / L; // the query this thread is dotting with
 
+    // The value this threads query is dotted with.
+    // Each thread in block handles one element of the window.
+    int value = query - local_context/2 + threadIdx.x
+    //ignore context window elements that cross the boundaries of the input X
+    if(value < 0 || value >= L){
+        break;
+    }
+    double sum = 0;
+    for(int i = 0; i < E; i++){
+        out[batch_index][query][threadIdx.x] += XQ[batch_index][query][i]*XV[batch_index][value][i];
+    }
 }
 
 
@@ -187,14 +208,16 @@ void sliding_dot(
     int N = A.size(0); // batch size (not the number of instances, but number of instances times number of attention heads).
     int L = A.size(1); // number of queries and keys
 
-    int blocks = N * L // a thread block for each query, in each instance
-    int threads = local_context //a thread for each value in the context window of the query.
+    dim3 gridDim(N * L);// a thread block for each query, in each instance
+    dim3 blockDim(local_context); //a thread for each value in the context window of the query.
 
-    local_dot_product_kernel<<<blocks, threads>>>(
+    local_dot_product_kernel<<<gridDim, blockDim>>>(
         A.packed_accessor32<float, 3, torch::RestrictPtrTraits>(),
         B.packed_accessor32<float, 3, torch::RestrictPtrTraits>(),
         out, // dim are (N, L, context size)
-        local_context
+        local_context,
+        L,
+        E
     );
 
 
