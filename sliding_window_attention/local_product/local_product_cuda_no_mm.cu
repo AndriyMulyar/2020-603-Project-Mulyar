@@ -212,14 +212,14 @@ void sliding_dot(
     local_dot_product_kernel<<<gridDim, blockDim>>>(
         A.packed_accessor32<float, 3, torch::RestrictPtrTraits>(),
         B.packed_accessor32<float, 3, torch::RestrictPtrTraits>(),
-        out, // dim are (N, L, context size)
+        out.packed_accessor32<float, 3, torch::RestrictPtrTraits>(), // dim are (N, L, context size)
         local_context,
         L,
         A.size(2)
     );
 
     }
-}
+
 
 
 template <
