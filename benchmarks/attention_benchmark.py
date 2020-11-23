@@ -19,7 +19,7 @@ def run_seq_len_benchmark(model: torch.nn.Module, builder=None, start_n=128, geo
 
         while N <= (geometric_step**6)*start_n:
             trials = []
-            for trial in range(0,1):
+            for trial in range(0,5):
                 print(f"Trials {trial} of {builder.attention_type} attention benchmark.")
                 X = torch.rand(1, N, 8 * 64, device='cuda')
 
