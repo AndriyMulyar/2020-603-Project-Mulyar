@@ -4,8 +4,9 @@ Benchmarking of Transformer Attention Kernel CUDA Implementations
 ### Organization.
 
 This repository is organized as follows.
-- [Custom attention CUDA kernel](fast-transformers/fast_transformers/local_product/local_product_cuda_no_mm.cu)
+- [Live version of custom attention CUDA kernel](fast-transformers/fast_transformers/local_product/local_product_cuda_no_mm.cu)
     Kernel at line 168
+- [Debugging version of custom attention CUDA kernel](sliding_window_attention/local_product)
 ### Installation
 Insure the machine you are on has the CUDA toolkit installed (and aliased with nvcc to the binary)
 The build of this package relies on the presence of python3-dev headers. You can find these in your package manager if they are not present.
