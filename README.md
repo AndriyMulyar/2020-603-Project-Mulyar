@@ -1,9 +1,26 @@
 # 2020-603-Project-Mulyar
 Benchmarking of Transformer Attention Kernel CUDA Implementations
 
-### Installation
-1. Clone the repository and run `make all`.
+### Organization.
 
+This repository is organized as follows.
+- [Custom attention CUDA kernel](fast-transformers/fast_transformers/local_product/local_product_cuda_no_mm.cu)
+    Kernel at line 168
+### Installation
+Insure the machine you are on has the CUDA toolkit installed (and aliased with nvcc to the binary)
+The build of this package relies on the presence of python3-dev headers. You can find these in your package manager if they are not present.
+
+**Maple does not have the required C++ headers installed. I had to run these experiments on another machine with GPUs**.
+
+1. Clone the repository and run `make all`.
+    - This will compile all of the relevant C++ and CUDA extensions and link them for use via python calls.
+
+
+
+### Benchmarking
+Once installed run `python benchmarks/attention_benchmarks` to replicate the results to generate the table the write-up.
+
+### Background
 A transformer is a deep neural network adept for capturing correlations between sets of object representations.
 Since 2017, they have achieved state ot the art performance on tasks such as language modeling and generation, image
 representation learning and generation, speech recognition and synthesis and music generation.

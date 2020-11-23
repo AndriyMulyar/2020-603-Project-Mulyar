@@ -172,17 +172,15 @@ __global__ void local_dot_product_kernel(float3_accessor XQ, float3_accessor XK,
 
     // The value this threads query is dotted with.
     // Each thread in block handles one element of the window.
-    int value = query - local_context/2 + threadIdx.x
+    int value = query - local_context/2 + threadIdx.x;
     //ignore context window elements that cross the boundaries of the input X
     if(value < 0 || value >= L){
-        break;
+        return;
     }
-    double sum = 0;
     for(int i = 0; i < E; i++){
-        out[batch_index][query][threadIdx.x] += XQ[batch_index][query][i]*XV[batch_index][value][i];
+        out[batch_index][query][threadIdx.x] += XQ[batch_index][query][i]*XK[batch_index][value][i];
     }
 }
-
 
 /**
  * Multiply every A_i with every B_j iff |i-j| < local_context/2.
@@ -217,48 +215,9 @@ void sliding_dot(
         out, // dim are (N, L, context size)
         local_context,
         L,
-        E
+        A.size(2)
     );
 
-
-    // Save the intermediate results in here
-    //
-//    auto buffer = torch::zeros(
-//        {N, a_blocks, a_blocks+local_context},
-//        A.options()
-//    );
-
-//    for (int l=0; l<L; l+=a_blocks) {
-//        // Compute the sizes of the sub problems to be computed in this
-//        // block iteration
-//        int s_start = std::max(0, l-local_context/2); // beginning of key context window
-//        int s_end = std::min(L, l-local_context/2+local_context+a_blocks); // end of blocked key context window
-//        int n_b = s_end-s_start; //length of blocked key context window
-//        int n_a = std::min(L-l, a_blocks); //number of queries in this block
-//
-//        // Compute the dot products
-//        // narrow the buffer tensor to contain the number of queries in this block
-//        auto buff = buffer.narrow(1, 0, n_a).narrow(2, 0, n_b);
-//        at::matmul_out(
-//            buff,
-//            A.narrow(1, l, n_a),
-//            B.narrow(1, s_start, n_b).transpose(1, 2)
-//        );
-//
-//        // Select the correct results from the buffer
-//        const int threads = 1024;
-//        //each thread will copy a single element from buff into out iff its in the context window (otherwise it dies).
-//        int blocks = ceildiv(buff.numel(), threads);
-//        sliding_dot_copy_kernel<<<blocks, threads>>>(
-//            copy_implementation,
-//            buff.packed_accessor32<float, 3, torch::RestrictPtrTraits>(),
-//            out.packed_accessor32<float, 3, torch::RestrictPtrTraits>(),
-//            local_context,
-//            l,
-//            s_start,
-//            buff.size(1)*buff.size(2),
-//            buff.size(2)
-//        );
     }
 }
 
