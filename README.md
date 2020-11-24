@@ -4,8 +4,8 @@ Benchmarking of Transformer Attention Kernel CUDA Implementations
 ### Organization.
 
 This repository is organized as follows.
-- [Live version of custom attention CUDA kernel](fast-transformers/fast_transformers/local_product/local_product_cuda_no_mm.cu)
-    Kernel at line 168
+- [My benchmarkable implementation of sliding window attention.](https://github.com/AndriyMulyar/fast-transformers/blob/master/fast_transformers/local_product/local_product_cuda.cu#L168)
+    The kernels at line 168
 - [Debugging version of custom attention CUDA kernel](sliding_window_attention/local_product)
 ### Installation
 Insure the machine you are on has the CUDA toolkit installed (and aliased with nvcc to the binary)
